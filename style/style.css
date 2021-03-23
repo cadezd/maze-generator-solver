@@ -46,8 +46,8 @@ body {
 /*Luna*/
 .moon {
   position: absolute;
-  bottom: -450px;
-  left: -450px;
+  bottom: -400px;
+  left: -350px;
   width: 900px;
   height: 900px;
   background-color: transparent;
@@ -56,13 +56,13 @@ body {
   z-index: 2;
   border-radius: 500px 400px;
   box-shadow: -60px -60px 80px #000000 inset, 0 0 20px 10px #000000;
-  animation: vrtenjeLune 5000s linear normal infinite;
+  animation: vrtenjeLune 9000s linear normal infinite;
 }
 
 @keyframes vrtenjeLune {
   /*animacija vrtenja zemlje*/
   100% {
-    background-position: 90000%;
+    background-position: 12000%;
   }
 }
 
@@ -167,25 +167,27 @@ body {
   src: url(../fonts/AstroSpace.ttf);
 }
 
-.container {
+#container {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: fit-content;
+  top: 50%;
+  margin-top: -130px;
   z-index: 6;
 }
 
-.container .labirint {
+#container .labirint {
   position: absolute;
   width: 600px;
   height: 600px;
-  top: 50%;
+  top: 280%;
   left: 50%;
   margin-top: -300px;
   margin-left: -300px;
   box-shadow: 0 0 30px #ffffff;
 }
 
-.container h1 {
+#container h1 {
   font-family: SpaceFont;
   color: #ffffff;
   font-size: 60px;
@@ -193,10 +195,10 @@ body {
   margin: auto;
   letter-spacing: 15px;
   -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #801f1f;
+  -webkit-text-stroke-color: #35402c;
 }
 
-.container h2 {
+#container h2 {
   font-family: SpaceFont;
   color: #ffffff;
   font-size: 45px;
@@ -204,5 +206,166 @@ body {
   margin: 30px auto;
   letter-spacing: 5px;
   -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #243fb8;
+  -webkit-text-stroke-color: #252f64;
+}
+
+/*FADE OUT ANIMACIJA*/
+.fade-out {
+  animation: fadeOut linear 2s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/*UFO credits: https://codepen.io/mattyfours/details/oxOwpV*/
+
+#ufo {
+  position: absolute;
+  top: 30%;
+  left: -20%;
+  z-index: 10;
+  width: 300px;
+  margin: auto;
+  margin-top: 50px;
+  min-height: 100px;
+}
+.glass {
+  width: 200px;
+  height: 120px;
+  background: #252f64;
+  opacity: 0.9;
+  margin: auto;
+  border-top-left-radius: 200px;
+  border-top-right-radius: 200px;
+  border-top: 15px solid #3c4b9b;
+}
+.base {
+  width: 300px;
+  height: 50px;
+  border-radius: 200px;
+  margin: auto;
+  background: #272727;
+  border-top: 3px solid #585858;
+  border-bottom: 10px solid #1d1d1d;
+}
+.lights {
+  width: 300px;
+  height: 20px;
+  margin-top: -39px;
+}
+.lights span {
+  width: 30px;
+  height: 30px;
+  float: left;
+  border-radius: 30px;
+  border: 2px solid rgb(122, 122, 122);
+  top: -38px;
+  margin-left: 20px;
+  margin-right: 20px;
+  background: #35402c;
+}
+
+.speed {
+  width: 50px;
+  height: 5px;
+  background: #555;
+  position: absolute;
+}
+#one {
+  margin-left: -55px;
+  margin-top: -40px;
+  opacity: 1;
+  animation: one 0.4s infinite;
+}
+#two {
+  margin-left: -60px;
+  margin-top: -55px;
+  animation: two 0.6s infinite;
+}
+#three {
+  margin-left: -50px;
+  margin-top: -70px;
+  animation: three 0.5s infinite;
+}
+
+@keyframes one {
+  0% {
+    margin-left: -55px;
+    opacity: 0.7;
+  }
+
+  100% {
+    margin-left: -125px;
+    opacity: 0;
+  }
+}
+
+@keyframes two {
+  0% {
+    margin-left: -55px;
+    opacity: 0.7;
+  }
+
+  100% {
+    margin-left: -145px;
+    opacity: 0;
+  }
+}
+
+@keyframes three {
+  0% {
+    margin-left: -55px;
+    opacity: 0.7;
+  }
+
+  100% {
+    margin-left: -130px;
+    opacity: 0;
+  }
+}
+
+@keyframes move {
+  0% {
+    left: -20%;
+    margin-top: 100px;
+  }
+  10% {
+    margin-top: 50px;
+  }
+  20% {
+    margin-top: 100px;
+  }
+  30% {
+    margin-top: 50px;
+  }
+  40% {
+    margin-top: 100px;
+  }
+  50% {
+    margin-top: 50px;
+  }
+  60% {
+    margin-top: 100px;
+  }
+  70% {
+    margin-top: 50px;
+  }
+  80% {
+    margin-top: 100px;
+  }
+  90% {
+    margin-top: 50px;
+  }
+  100% {
+    left: 120%;
+    margin-top: 100px;
+  }
 }

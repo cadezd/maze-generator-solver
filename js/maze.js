@@ -1,17 +1,21 @@
-/*PROGRAM ZA GENERIRANJE LABIRINT (ni moj program)*/
+/*PROGRAM ZA GENERIRANJE LABIRINT (ni moj program) ccredits: */
 
 // Initialize the canvas
 let maze = document.querySelector("canvas");
 maze.style.background = "transparent"
 let ctx = maze.getContext("2d");
 
+let container = document.getElementById("container");
 let status = document.getElementById("status");
-status.innerHTML = "Status: press any key"
+status.innerHTML = "Status: press any key";
 
-window.addEventListener("keydown", function(){ 
-  maze.style.background = "rgba(255, 255, 255, 0.5)";
+
+
+function content(){ 
+  container.style.top = "20%";
+  maze.style.background = "rgba(255, 255, 255, 0.3)";
   maze.classList.add("labirint");
-
+ 
   let audio = new Audio("sounds/generating.mp3");
   audio.loop = true;
   audio.autoplay = true;
@@ -57,8 +61,7 @@ window.addEventListener("keydown", function(){
       // Loop through the 2d grid array and call the show method for each cell instance
       for (let r = 0; r < this.rows; r++) {
         for (let c = 0; c < this.columns; c++) {
-          let grid = this.grid;
-          grid[r][c].show(this.size, this.rows, this.columns);
+          this.grid[r][c].show(this.size, this.rows, this.columns);
         }
       }
       // This function will assign the variable 'next' to random cell out of the current cells available neighbouting cells
@@ -91,7 +94,7 @@ window.addEventListener("keydown", function(){
       if(!generationComplete){
         setTimeout(async ()=>{  
           this.draw();
-        }, 35);
+        }, 10);
       }
     }
   }
@@ -201,32 +204,51 @@ window.addEventListener("keydown", function(){
       ctx.stroke();
     }
 
-
-    // Highlights the current cell on the grid. Columns is once again passed in to set the size of the grid.
-    highlight(columns) {
-      // Additions and subtractions added so the highlighted cell does cover the walls
-      let x = (this.colNum * this.parentSize) / columns - 1;
-      let y = (this.rowNum * this.parentSize) / columns - 1;
-      ctx.fillStyle = "#801f1f";
-      ctx.fillRect(
+    changeBackground(columns, color) {
+      // z piko oznaci celico (kadar algoritem isce pot)
+      let x = ((this.colNum * this.parentSize) / columns) + ((this.parentSize / columns) / 2);
+      let y = ((this.rowNum * this.parentSize) / columns) + ((this.parentSize / columns) / 2);
+      ctx.beginPath();
+      ctx.fillStyle = color;
+      ctx.ellipse(
         x,
         y,
-        this.parentSize / columns,
-        this.parentSize / columns
+        (this.parentSize / columns) / 7 ,
+        (this.parentSize / columns) / 7 ,
+        Math.PI / 4,
+        0,
+        2 * Math.PI
       );
+      if (this.goal) {
+        ctx.fillStyle = "rgba(35, 56, 173, 1)";
+        ctx.fillRect(x + 2, y + 2, size / columns - 4, size / rows - 4);
+        ctx.ellipse(
+          x,
+          y,
+          (this.parentSize / columns) / 7 ,
+          (this.parentSize / columns) / 7 ,
+          Math.PI / 4,
+          0,
+          2 * Math.PI
+        );
+      }
+      ctx.fill();
+      ctx.closePath();
     }
 
-    changeBackground(columns, color) {
-      // Additions and subtractions added so the highlighted cell does cover the walls
-      let x = (this.colNum * this.parentSize) / columns ;
-      let y = (this.rowNum * this.parentSize) / columns ;
-      ctx.fillStyle = color;
-      ctx.fillRect(
+    drawAlien(columns, image){
+      // narise vesoljcka kadar isce pot
+      let x = ((this.colNum * this.parentSize) / columns) + ((this.parentSize / columns) / 6);
+      let y = ((this.rowNum * this.parentSize) / columns) + ((this.parentSize / columns) / 6);
+      ctx.beginPath();
+      ctx.drawImage(
+        image,
         x,
         y,
-        this.parentSize / columns ,
-        this.parentSize / columns 
+        (this.parentSize / columns) / 1.5,
+        (this.parentSize / columns) / 1.5
       );
+      ctx.closePath();
     }
 
     removeWalls(cell1, cell2) {
@@ -240,15 +262,42 @@ window.addEventListener("keydown", function(){
         cell1.walls.rightWall = false;
         cell2.walls.leftWall = false;
       }
-      // compares to two cells on x axis
+      // compares to two cells on y axis
       let y = cell1.rowNum - cell2.rowNum;
-      // Removes the relevant walls if there is a different on x axis
+      // Removes the relevant walls if there is a different on y axis
       if (y === 1) {
         cell1.walls.topWall = false;
         cell2.walls.bottomWall = false;
       } else if (y === -1) {
         cell1.walls.bottomWall = false;
         cell2.walls.topWall = false;
+      }
+    }
+
+    // Highlights the current cell on the grid. Columns is once again passed in to set the size of the grid.
+    highlight(columns) {
+      // Additions and subtractions added so the highlighted cell does cover the walls
+      let x = (this.colNum * this.parentSize) / columns - 1;
+      let y = (this.rowNum * this.parentSize) / columns - 1;
+      ctx.fillStyle = "rgba(55, 120, 44, 1)";
+      ctx.fillRect(
+        x,
+        y,
+        this.parentSize / columns,
+        this.parentSize / columns
+      );
+    }
+
+    clear(size, rows, columns) {
+      // Additions and subtractions added so the highlighted cell does cover the walls
+      let x = (this.colNum * this.parentSize) / columns - 1;
+      let y = (this.rowNum * this.parentSize) / columns - 1;
+      ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+      ctx.clearRect(x + 2, y + 2, size / columns - 4, size / rows - 4);
+      ctx.fillRect(x + 2, y + 2, size / columns - 4, size / rows - 4);
+      if (this.goal) {
+        ctx.fillStyle = "rgba(35, 56, 173, 1)";
+        ctx.fillRect(x + 2, y + 2, size / columns - 4, size / rows - 4);
       }
     }
 
@@ -263,26 +312,23 @@ window.addEventListener("keydown", function(){
       if (this.walls.rightWall) this.drawRightWall(x, y, size, columns, rows);
       if (this.walls.bottomWall) this.drawBottomWall(x, y, size, columns, rows);
       if (this.walls.leftWall) this.drawLeftWall(x, y, size, columns, rows);
-      if (this.visited) {
-        ctx.fillRect(x, y , size / columns , size / rows );
-      }
-      if(this.solverVisited){
-        this.changeBackground(columns, "rgba(255, 0, 0, 0.3)");
-      }
+      ctx.fillRect(x, y , size / columns , size / rows );
       if (this.goal) {
-        ctx.fillStyle = "#2338ad";
+        ctx.fillStyle = "rgba(35, 56, 173, 1)";
         ctx.fillRect(x + 1, y + 1, size / columns - 2, size / rows - 2);
       }
     }
   }
-
+ 
   /*PROGRAM ZA ISKANJE POTI (moj program)*/
+  
   let mazeGenerator = new Maze(600, 25, 25);
   mazeGenerator.setup(); // naredi tabelo  s celicami
   mazeGenerator.draw(); // narise labirint
 
 
   let trenuten;
+  let prejsnji;
   let sosedi;
   let labirint = mazeGenerator.grid;
   let cilj = labirint[labirint.length - 1][labirint.length - 1];
@@ -294,16 +340,35 @@ window.addEventListener("keydown", function(){
   let x;
   let neobiskani;
   let resen = false;
+  //slika vesoljcka
+  let alien = new Image();
+  alien.src = "../images/alien.png"
+
+  let ufo = document.getElementById("ufo");
   
   async function resiLabirint(){ 
     status.innerHTML =  "Status: Finding path";
 
     trenuten = stack[stack.length - 1]; // uzame prvega iz kupa
     trenuten.solverVisited = true; // oznaci da je bil obiskan
-
-    trenuten.changeBackground(mazeGenerator.columns, "rgba(255, 0, 0, 0.2)"); // spremeni ozadje
+    
+    //sproti brise vesoljcke in rise sled
+    if(stack.length > 4){
+      trenuten.drawAlien(mazeGenerator.columns, alien);
+      stack[stack.length - 4].clear(mazeGenerator.size, mazeGenerator.rows, mazeGenerator.columns);
+      stack[stack.length - 4].changeBackground(mazeGenerator.columns, "rgba(55, 120, 44, 0.8)");
+    }
+    if(stack.length > 3){
+      trenuten.drawAlien(mazeGenerator.columns, alien);
+      stack[stack.length - 3].clear(mazeGenerator.size, mazeGenerator.rows, mazeGenerator.columns);
+      stack[stack.length - 3].changeBackground(mazeGenerator.columns, "rgba(55, 120, 44, 0.8)");
+    }
+    if(stack.length > 2){
+        trenuten.drawAlien(mazeGenerator.columns, alien);
+        stack[stack.length - 2].clear(mazeGenerator.size, mazeGenerator.rows, mazeGenerator.columns);
+        stack[stack.length - 2].changeBackground(mazeGenerator.columns, "rgba(55, 120, 44, 0.8)");
+    }
   
-
     if(trenuten === cilj){ // preveri ali je na cilju
       console.log("konec");
       resen = true;
@@ -312,12 +377,12 @@ window.addEventListener("keydown", function(){
     if(!resen && generationComplete){ // ponavlja dokler ni resen in pocaka da se labirint zgenerira
       setTimeout(() => {
         resiLabirint();
-      }, 150);
+      }, 10);
     } else { // ce je konec obarvaj pot
       status.innerHTML =  "Status: Path found";
       fadeAudio();
-      console.log(stack);
-      stack.forEach(celica => celica.changeBackground(mazeGenerator.columns, "rgba(0, 0, 255, 0.5)"));
+      maze.classList.add("fade-out");
+      ufo.style.animation = "move 5s infinite";
     }
 
     neobiskani = 0;
@@ -329,33 +394,45 @@ window.addEventListener("keydown", function(){
       }
     });
 
-    if(neobiskani === 0){ // ce ni vec sosedov brise kup
+    if(neobiskani === 0){ // ce ni vec sosedov brise kup in brise sled ter vesoljcka
+      stack[stack.length - 2].drawAlien(mazeGenerator.columns, alien);
+      stack[stack.length - 1].clear(mazeGenerator.size, mazeGenerator.rows, mazeGenerator.columns);
       stack.pop();
     }
 
   }
 
-  let pizkusaj  = setInterval(() => { // poizkusa zagnati funkcijo resi labirint vendar caka  da se labirint narise
+  let pizkusaj  = setInterval(() => { 
+    // poizkusa zagnati funkcijo resi labirint vendar caka  da se labirint narise
     if(generationComplete) {
       resiLabirint();
       clearInterval(pizkusaj);
     }
   }, 150);
 
+
   function fadeAudio () { // naredi fade effekt na zvoku
     let fade = setInterval(() => {
-
-        if ( (audio.volume != 0.0)) { // zmanjsuje volumen
+        if ((audio.volume != 0.0)) { // zmanjsuje volumen
           audio.volume -= 0.1;
-        }
-        if (audio.volume === 0.0) {
+          if(audio.volume <= 0.0) {
+            audio.volume = 0.0;
             clearInterval(fade);
-        }
+          }
+        }  else {
+          audio.volume = 0.0;
+          clearInterval(fade);
+        } 
     }, 200);
   }
+}
+
+let playing = false;
+
+window.addEventListener("keydown", function start(){
+    window.removeEventListener("keydown", start, false);
+    content();
 });
-
-
 
 
 

@@ -342,7 +342,7 @@ function content(){
   let resen = false;
   //slika vesoljcka
   let alien = new Image();
-  alien.src = "../images/alien.png"
+  alien.src = "images/alien.png"
 
   let ufo = document.getElementById("ufo");
   

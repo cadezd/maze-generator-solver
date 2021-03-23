@@ -94,7 +94,7 @@ function content(){
       if(!generationComplete){
         setTimeout(async ()=>{  
           this.draw();
-        }, 10);
+        }, 13);
       }
     }
   }
@@ -377,7 +377,7 @@ function content(){
     if(!resen && generationComplete){ // ponavlja dokler ni resen in pocaka da se labirint zgenerira
       setTimeout(() => {
         resiLabirint();
-      }, 10);
+      }, 80);
     } else { // ce je konec obarvaj pot
       status.innerHTML =  "Status: Path found";
       fadeAudio();
